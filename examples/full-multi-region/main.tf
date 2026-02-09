@@ -47,7 +47,7 @@ module "resource_groups" {
 
   location         = each.value.location
   name             = each.value.name
-  enable_telemetry = false
+  enable_telemetry = false //Switch to true to enable telemetry
   tags             = module.config.outputs.tags
 }
 

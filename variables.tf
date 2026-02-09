@@ -74,7 +74,7 @@ DESCRIPTION
 variable "hub_and_spoke_networks_settings" {
   type = object({
     enabled_resources = optional(object({
-      ddos_protection_plan = optional(bool, true)
+      ddos_protection_plan = optional(bool, false)
     }), {})
     ddos_protection_plan = optional(object({
       name                = optional(string)
@@ -107,7 +107,7 @@ variable "hub_virtual_networks" {
       firewall                              = optional(bool, true)
       firewall_policy                       = optional(bool, true)
       bastion                               = optional(bool, true)
-      virtual_network_gateway_express_route = optional(bool, true)
+      virtual_network_gateway_express_route = optional(bool, false)
       virtual_network_gateway_vpn           = optional(bool, true)
       private_dns_zones                     = optional(bool, true)
       private_dns_resolver                  = optional(bool, true)

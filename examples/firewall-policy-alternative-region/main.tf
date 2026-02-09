@@ -34,7 +34,7 @@ locals {
   resource_groups = {
     hub_primary = {
       name     = "rg-hub-primary-${random_string.suffix.result}"
-      location = "swedencentral"
+      location = "northeurope" //add the region of origin
     }
   }
 }
@@ -46,7 +46,7 @@ module "resource_groups" {
 
   location         = each.value.location
   name             = each.value.name
-  enable_telemetry = false
+  enable_telemetry = false //Switch to true to enable telemetry
   tags             = local.common_tags
 }
 
@@ -57,8 +57,8 @@ module "base_firewall_policy" {
   location            = "uksouth"
   name                = "fwp-global-base-uksouth-001"
   resource_group_name = module.resource_groups["hub_primary"].name
-  enable_telemetry    = false
-  firewall_policy_sku = "Standard"
+  enable_telemetry    = false  //Switch to true to enable telemetry
+  firewall_policy_sku = "basic"  //modify if you choose basic or premium
   tags                = local.common_tags
 }
 
@@ -66,27 +66,27 @@ module "base_firewall_policy" {
 module "test" {
   source = "../../"
 
-  enable_telemetry = false
+  enable_telemetry = false //Switch to true to enable telemetry
   hub_and_spoke_networks_settings = {
     enabled_resources = {
-      ddos_protection_plan = false
+      ddos_protection_plan = false //Switch to true to enable ddos for default false
     }
   }
   hub_virtual_networks = {
     primary = {
       enabled_resources = {
-        firewall                              = true
+        firewall                              = true //Switch to false for default true
         private_dns_resolver                  = false
         private_dns_zones                     = false
-        bastion                               = false
+        bastion                               = false //Switch to true for default false
         virtual_network_gateway_express_route = false
-        virtual_network_gateway_vpn           = false
+        virtual_network_gateway_vpn           = false //Switch to true for default false
       }
       location          = local.resource_groups["hub_primary"].location
       default_parent_id = module.resource_groups["hub_primary"].resource_id
       firewall_policy = {
-        name           = "fwp-hub-uksouth-001"
-        location       = "uksouth"
+        name           = "addname"  //add name firewall policy
+        location       = "uksouth"  //add region origin 
         base_policy_id = module.base_firewall_policy.resource_id
       }
     }

@@ -34,11 +34,11 @@ locals {
   resource_groups = {
     hub_primary = {
       name     = "rg-hub-primary-${random_string.suffix.result}"
-      location = "australiaeast"
+      location = "northeurope"  //add the region of origin
     }
     hub_secondary = {
       name     = "rg-hub-secondary-${random_string.suffix.result}"
-      location = "australiacentral"
+      location = "westeurope"  //add the replication region
     }
   }
 }
@@ -50,7 +50,7 @@ module "resource_groups" {
 
   location         = each.value.location
   name             = each.value.name
-  enable_telemetry = false
+  enable_telemetry = false //Switch to true to enable telemetry
   tags             = local.common_tags
 }
 
@@ -61,33 +61,33 @@ module "test" {
   enable_telemetry = false
   hub_virtual_networks = {
     primary = {
-      enabled_resources = {
+      enabled_resources = { //Choose the network topology; if activated, set to true.
         virtual_network_gateway_express_route = false
-        virtual_network_gateway_vpn           = false
+        virtual_network_gateway_vpn           = true //for default true
       }
       location = local.resource_groups["hub_primary"].location
       # default_hub_address_space = "10.0.0.0/16"
       default_parent_id = module.resource_groups["hub_primary"].resource_id
       firewall = {
-        sku_tier = "Basic"
+        sku_tier = "Basic" //modify if you choose standard or premium
       }
       firewall_policy = {
-        sku = "Basic"
+        sku = "Basic" //modify if you choose standard or premium
       }
     }
     secondary = {
-      enabled_resources = {
+      enabled_resources = { //Choose the network topology; if activated, set to true.
         virtual_network_gateway_express_route = false
-        virtual_network_gateway_vpn           = false
+        virtual_network_gateway_vpn           = true //for default true
       }
       location = local.resource_groups["hub_secondary"].location
       # default_hub_address_space = "10.1.0.0/16"
       default_parent_id = module.resource_groups["hub_secondary"].resource_id
       firewall = {
-        sku_tier = "Basic"
+        sku_tier = "Basic" //modify if you choose standard or premium
       }
       firewall_policy = {
-        sku = "Basic"
+        sku = "Basic" //modify if you choose standard or premium
       }
     }
   }
