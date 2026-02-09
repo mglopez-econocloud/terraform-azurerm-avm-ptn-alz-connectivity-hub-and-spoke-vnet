@@ -52,7 +52,7 @@ module "virtual_network_gateway" {
 
 module "gateway_route_table" {
   source   = "Azure/avm-res-network-routetable/azurerm"
-  version  = "0.3.1"
+  version  = "0.5.0"
   for_each = local.gateway_route_table
 
   location                      = each.value.location
@@ -61,6 +61,18 @@ module "gateway_route_table" {
   bgp_route_propagation_enabled = each.value.bgp_route_propagation_enabled
   enable_telemetry              = var.enable_telemetry
   tags                          = var.tags
+}
+
+module "gateway_route_table_routes" {
+  source   = "Azure/avm-res-network-routetable/azurerm//modules/route"
+  version  = "0.5.0"
+  for_each = local.gateway_route_table_routes_flattened
+
+  name                = each.value.name
+  address_prefix      = each.value.address_prefix
+  next_hop_ip_address = each.value.next_hop_ip_address
+  next_hop_type       = each.value.next_hop_type
+  parent_id           = module.gateway_route_table[each.value.hub_network_key].resource_id
 }
 
 module "dns_resolver" {
@@ -80,7 +92,7 @@ module "dns_resolver" {
 
 module "private_dns_zones" {
   source   = "Azure/avm-ptn-network-private-link-private-dns-zones/azurerm"
-  version  = "0.22.2"
+  version  = "0.23.1"
   for_each = local.private_dns_zones
 
   location                                                   = each.value.location

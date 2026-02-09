@@ -30,6 +30,7 @@ module "fw_default_ips" {
   name                = each.value.name
   resource_group_name = each.value.resource_group_name
   allocation_method   = "Static"
+  domain_name_label   = each.value.domain_name_label
   enable_telemetry    = var.enable_telemetry
   ip_version          = each.value.ip_version
   public_ip_prefix_id = each.value.public_ip_prefix_id
@@ -48,6 +49,7 @@ module "fw_management_ips" {
   name                = each.value.name
   resource_group_name = each.value.resource_group_name
   allocation_method   = "Static"
+  domain_name_label   = each.value.domain_name_label
   enable_telemetry    = var.enable_telemetry
   ip_version          = each.value.ip_version
   public_ip_prefix_id = each.value.public_ip_prefix_id

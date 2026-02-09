@@ -267,7 +267,7 @@ Description: Map of IP Configurations to create for the Virtual Network Gateway.
   - `allocation_method` - (Optional) The allocation method of the Public IP Address. Possible values are Static or Dynamic. Defaults to Dynamic.
   - `sku` - (Optional) The SKU of the Public IP Address. Possible values are Basic or Standard. Defaults to Standard.
   - `tags` - (Optional) A mapping of tags to assign to the resource.
-  - `zones` - (Optional) The list of availability zones for the Public IP Address.
+  - `zones` - (Optional) The list of availability zones for the Public IP Address. Set to `[]` for no zones.
   - `edge_zone` - (Optional) Specifies the Edge Zone within the Azure Region where this Public IP should exist. Changing this forces a new Public IP to be created.
   - `ddos_protection_mode` - (Optional) The DDoS protection mode of the Public IP Address. Possible values are Disabled, Enabled or VirtualNetworkInherited. Defaults to VirtualNetworkInherited.
   - `ddos_protection_plan_id` - (Optional) The ID of the DDoS protection plan for the Public IP Address.
@@ -315,7 +315,6 @@ Default: `{}`
 
 Description: Map of Local Network Gateways and Virtual Network Gateway Connections to create for the Virtual Network Gateway.
 
-- `id` - (Optional) The ID of the pre-exisitng Local Network Gateway.
 - `name` - (Optional) The name of the Local Network Gateway to create.
 - `address_space` - (Optional) The list of address spaces for the Local Network Gateway.
 - `gateway_fqdn` - (Optional) The gateway FQDN for the Local Network Gateway.
@@ -362,7 +361,6 @@ Type:
 
 ```hcl
 map(object({
-    id                  = optional(string, null)
     name                = optional(string, null)
     resource_group_name = optional(string, null)
     address_space       = optional(list(string), null)
@@ -418,7 +416,11 @@ Default: `{}`
 
 ### <a name="input_retry"></a> [retry](#input\_retry)
 
-Description: Retry configuration for the resource operations
+Description: (Optional) An object defining the retry configuration for resource operations. This is useful for handling transient errors during resource provisioning.
+
+- `error_message_regex` - (Optional) A list of regular expressions to match against error messages. If a match is found, the operation will be retried. Default `["ReferencedResourceNotProvisioned"]`.
+- `interval_seconds` - (Optional) The initial interval in seconds between retry attempts. Default `10`.
+- `max_interval_seconds` - (Optional) The maximum interval in seconds between retry attempts. Default `180`.
 
 Type:
 
@@ -506,7 +508,12 @@ Default: `null`
 
 ### <a name="input_timeouts"></a> [timeouts](#input\_timeouts)
 
-Description: Timeouts for the resource operations
+Description: (Optional) An object defining the timeout durations for resource operations. These values control how long Terraform will wait for each operation to complete.
+
+- `create` - (Optional) The timeout for create operations. Default `"60m"`.
+- `read` - (Optional) The timeout for read operations. Default `"5m"`.
+- `update` - (Optional) The timeout for update operations. Default `"60m"`.
+- `delete` - (Optional) The timeout for delete operations. Default `"60m"`.
 
 Type:
 
